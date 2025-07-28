@@ -1,0 +1,372 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: prune-last
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: default
+  namespace: prune-last
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod
+  namespace: prune-last
+spec:
+  containers:
+    - name: test-container
+      image: nginx:latest
+      ports:
+        - containerPort: 80
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 100m
+          memory: 100Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-deployment
+  namespace: prune-last
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-deployment
+  template:
+    metadata:
+      labels:
+        app: test-deployment
+    spec:
+      containers:
+        - name: test-container
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: test-replicaset
+  namespace: prune-last
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-replicaset
+  template:
+    metadata:
+      labels:
+        app: test-replicaset
+    spec:
+      containers:
+        - name: test-container
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: test-daemonset
+  namespace: prune-last
+spec:
+  selector:
+    matchLabels:
+      app: test-daemonset
+  template:
+    metadata:
+      labels:
+        app: test-daemonset
+    spec:
+      containers:
+        - name: test-container
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: test-statefulset
+  namespace: prune-last
+spec:
+  serviceName: test-statefulset
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-statefulset
+  template:
+    metadata:
+      labels:
+        app: test-statefulset
+    spec:
+      containers:
+        - name: test-container
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: test-job
+  namespace: prune-last
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: test-container
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: test-cronjob
+  namespace: prune-last
+spec:
+  schedule: "*/1 * * * *"
+  concurrencyPolicy: Forbid
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: test-container
+              image: nginx:latest
+              ports:
+                - containerPort: 80
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 100m
+                  memory: 100Mi
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: test-replicationcontroller
+  namespace: prune-last
+spec:
+  replicas: 1
+  selector:
+    app: test-replicationcontroller
+  template:
+    metadata:
+      labels:
+        app: test-replicationcontroller
+    spec:
+      containers:
+        - name: test-container
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-pod-live-migration
+  namespace: prune-last
+spec:
+  containers:
+    - name: test-container
+      image: nginx:latest
+      ports:
+        - containerPort: 80
+      resources:
+        requests:
+          cpu: 100m
+          memory: 100Mi
+        limits:
+          cpu: 100m
+          memory: 100Mi
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: test-job-live-migration
+  namespace: prune-last
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: test-container
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+---
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: test-replicaset-live-migration
+  namespace: prune-last
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-replicaset-live-migration
+  template:
+    metadata:
+      labels:
+        app: test-replicaset-live-migration
+    spec:
+      containers:
+        - name: test-container
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-deployment-live-migration
+  namespace: prune-last
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-deployment-live-migration
+  template:
+    metadata:
+      labels:
+        app: test-deployment-live-migration
+    spec:
+      containers:
+        - name: test-container
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test-deployment-dynamic-recommendation
+  namespace: prune-last
+  labels:
+    some.label.io: "value"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: test-deployment-dynamic-recommendation
+  template:
+    metadata:
+      labels:
+        app: test-deployment-dynamic-recommendation
+    spec:
+      containers:
+        - name: test-container
+          image: nginx:latest
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 100Mi
+            limits:
+              cpu: 100m
+              memory: 100Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  namespace: prune-last
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            memory: "500Mi"
+            cpu: "300m"
+          requests:
+            memory: "200Mi"
+            cpu: "200m"
