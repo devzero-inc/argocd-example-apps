@@ -1,0 +1,53 @@
+apiVersion: batch.volcano.sh/v1alpha1
+kind: Job
+metadata:
+  name: long-running-volcano-job2
+spec:
+  minAvailable: 2
+  schedulerName: volcano
+  queue: default
+  policies:
+    - event: PodFailed
+      action: RestartJob
+  tasks:
+    - name: fib-task
+      replicas: 2
+      policies:
+        - event: TaskCompleted
+          action: CompleteJob
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: fib-container
+              image: python:3.12-alpine
+              command:
+                - python
+                - -u
+                - -c
+                - |
+                  import time
+                  from datetime import datetime
+
+                  print("Starting Fibonacci loop with timestamps...", flush=True)
+
+                  a, b = 0, 1
+                  start = time.time()
+                  runtime_seconds = 10800  # 3 hours
+
+                  while True:
+                      elapsed = time.time() - start
+                      if elapsed >= runtime_seconds:
+                          print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | Job reached 3 hours of runtime. Exiting.", flush=True)
+                          break
+
+                      print(f"{datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | fibonacci={a}", flush=True)
+                      a, b = b, a + b
+                      time.sleep(3)
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 100Mi
+                limits:
+                  cpu: 200m
+                  memory: 200Mi
