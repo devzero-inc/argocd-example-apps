@@ -1,39 +1,34 @@
----
-apiVersion: v1
-kind: Namespace
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: respec-ignore-diff
----
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: default
-  namespace: respec-ignore-diff
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: test-pod
-  namespace: respec-ignore-diff
+  name: nginx-deployment
 spec:
-  containers:
-    - name: test-container
-      image: nginx:latest
-      ports:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:latest
+        ports:
         - containerPort: 80
-      resources:
-        requests:
-          cpu: 100m
-          memory: 100Mi
-        limits:
-          cpu: 100m
-          memory: 100Mi
+        resources:
+          limits:
+            memory: "200Mi"
+            cpu: "200m"
+          requests:
+            memory: "100Mi"
+            cpu: "100m"
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: test-deployment
-  namespace: respec-ignore-diff
 spec:
   replicas: 1
   selector:
@@ -54,23 +49,23 @@ spec:
               cpu: 100m
               memory: 100Mi
             limits:
-              cpu: 100m
-              memory: 100Mi
+              cpu: 200m
+              memory: 200Mi
 ---
 apiVersion: apps/v1
-kind: ReplicaSet
+kind: StatefulSet
 metadata:
-  name: test-replicaset
-  namespace: respec-ignore-diff
+  name: test-statefulset
 spec:
-  replicas: 1
+  serviceName: test-statefulset
+  replicas: 2
   selector:
     matchLabels:
-      app: test-replicaset
+      app: test-statefulset
   template:
     metadata:
       labels:
-        app: test-replicaset
+        app: test-statefulset
     spec:
       containers:
         - name: test-container
@@ -82,14 +77,13 @@ spec:
               cpu: 100m
               memory: 100Mi
             limits:
-              cpu: 100m
-              memory: 100Mi
+              cpu: 200m
+              memory: 200Mi
 ---
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
   name: test-daemonset
-  namespace: respec-ignore-diff
 spec:
   selector:
     matchLabels:
@@ -109,264 +103,5 @@ spec:
               cpu: 100m
               memory: 100Mi
             limits:
-              cpu: 100m
-              memory: 100Mi
----
-apiVersion: apps/v1
-kind: StatefulSet
-metadata:
-  name: test-statefulset
-  namespace: respec-ignore-diff
-spec:
-  serviceName: test-statefulset
-  replicas: 1
-  selector:
-    matchLabels:
-      app: test-statefulset
-  template:
-    metadata:
-      labels:
-        app: test-statefulset
-    spec:
-      containers:
-        - name: test-container
-          image: nginx:latest
-          ports:
-            - containerPort: 80
-          resources:
-            requests:
-              cpu: 100m
-              memory: 100Mi
-            limits:
-              cpu: 100m
-              memory: 100Mi
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: test-job
-  namespace: respec-ignore-diff
-spec:
-  template:
-    spec:
-      restartPolicy: Never
-      containers:
-        - name: test-container
-          image: nginx:latest
-          ports:
-            - containerPort: 80
-          resources:
-            requests:
-              cpu: 100m
-              memory: 100Mi
-            limits:
-              cpu: 100m
-              memory: 100Mi
----
-apiVersion: batch/v1
-kind: CronJob
-metadata:
-  name: test-cronjob
-  namespace: respec-ignore-diff
-spec:
-  schedule: "*/1 * * * *"
-  concurrencyPolicy: Forbid
-  jobTemplate:
-    spec:
-      template:
-        spec:
-          restartPolicy: Never
-          containers:
-            - name: test-container
-              image: nginx:latest
-              ports:
-                - containerPort: 80
-              resources:
-                requests:
-                  cpu: 100m
-                  memory: 100Mi
-                limits:
-                  cpu: 100m
-                  memory: 100Mi
----
-apiVersion: v1
-kind: ReplicationController
-metadata:
-  name: test-replicationcontroller
-  namespace: respec-ignore-diff
-spec:
-  replicas: 1
-  selector:
-    app: test-replicationcontroller
-  template:
-    metadata:
-      labels:
-        app: test-replicationcontroller
-    spec:
-      containers:
-        - name: test-container
-          image: nginx:latest
-          ports:
-            - containerPort: 80
-          resources:
-            requests:
-              cpu: 100m
-              memory: 100Mi
-            limits:
-              cpu: 100m
-              memory: 100Mi
----
-apiVersion: v1
-kind: Pod
-metadata:
-  name: test-pod-live-migration
-  namespace: respec-ignore-diff
-spec:
-  containers:
-    - name: test-container
-      image: nginx:latest
-      ports:
-        - containerPort: 80
-      resources:
-        requests:
-          cpu: 100m
-          memory: 100Mi
-        limits:
-          cpu: 100m
-          memory: 100Mi
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: test-job-live-migration
-  namespace: respec-ignore-diff
-spec:
-  template:
-    spec:
-      restartPolicy: Never
-      containers:
-        - name: test-container
-          image: nginx:latest
-          ports:
-            - containerPort: 80
-          resources:
-            requests:
-              cpu: 100m
-              memory: 100Mi
-            limits:
-              cpu: 100m
-              memory: 100Mi
----
-apiVersion: apps/v1
-kind: ReplicaSet
-metadata:
-  name: test-replicaset-live-migration
-  namespace: respec-ignore-diff
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: test-replicaset-live-migration
-  template:
-    metadata:
-      labels:
-        app: test-replicaset-live-migration
-    spec:
-      containers:
-        - name: test-container
-          image: nginx:latest
-          ports:
-            - containerPort: 80
-          resources:
-            requests:
-              cpu: 100m
-              memory: 100Mi
-            limits:
-              cpu: 100m
-              memory: 100Mi
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: test-deployment-live-migration
-  namespace: respec-ignore-diff
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: test-deployment-live-migration
-  template:
-    metadata:
-      labels:
-        app: test-deployment-live-migration
-    spec:
-      containers:
-        - name: test-container
-          image: nginx:latest
-          ports:
-            - containerPort: 80
-          resources:
-            requests:
-              cpu: 100m
-              memory: 100Mi
-            limits:
-              cpu: 100m
-              memory: 100Mi
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: test-deployment-dynamic-recommendation
-  namespace: respec-ignore-diff
-  labels:
-    some.label.io: "value"
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: test-deployment-dynamic-recommendation
-  template:
-    metadata:
-      labels:
-        app: test-deployment-dynamic-recommendation
-    spec:
-      containers:
-        - name: test-container
-          image: nginx:latest
-          ports:
-            - containerPort: 80
-          resources:
-            requests:
-              cpu: 100m
-              memory: 100Mi
-            limits:
-              cpu: 100m
-              memory: 100Mi
----
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: nginx-deployment
-  namespace: respec-ignore-diff
-spec:
-  replicas: 3
-  selector:
-    matchLabels:
-      app: nginx
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-      - name: nginx
-        image: nginx:latest
-        ports:
-        - containerPort: 80
-        resources:
-          limits:
-            memory: "500Mi"
-            cpu: "300m"
-          requests:
-            memory: "200Mi"
-            cpu: "200m"
+              cpu: 200m
+              memory: 200Mi
