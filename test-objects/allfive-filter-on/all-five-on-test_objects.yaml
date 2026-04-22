@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: nginx-deployment
 spec:
-  replicas: 3
+  replicas: 2
   selector:
     matchLabels:
       app: nginx
@@ -58,7 +58,7 @@ metadata:
   name: test-statefulset
 spec:
   serviceName: test-statefulset
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: test-statefulset
