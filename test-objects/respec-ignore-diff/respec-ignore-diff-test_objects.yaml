@@ -22,8 +22,8 @@ spec:
             memory: "512Mi"
             cpu: "500m"
           requests:
-            memory: "256Mi"
-            cpu: "300m"
+            memory: "200Mi"
+            cpu: "150m"
 ---
 apiVersion: apps/v1
 kind: Deployment
